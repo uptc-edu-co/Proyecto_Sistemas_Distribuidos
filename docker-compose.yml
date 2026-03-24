@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   api-gateway:
     image: node:18
@@ -8,17 +6,17 @@ services:
       - vpc_private
 
   ms-auth:
-    image: node:18
+    image: openjdk:17
     networks:
       - vpc_private
 
   ms-contracts:
-    image: node:18
+    image: openjdk:17
     networks:
       - vpc_private
 
   ms-suppliers:
-    image: node:18
+    image: openjdk:17
     networks:
       - vpc_private
 
