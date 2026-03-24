@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  api-gateway:
+    image: node:18
+    networks:
+      - dmz
+      - vpc_private
+
+  ms-auth:
+    image: node:18
+    networks:
+      - vpc_private
+
+  ms-contracts:
+    image: node:18
+    networks:
+      - vpc_private
+
+  ms-suppliers:
+    image: node:18
+    networks:
+      - vpc_private
+
+  ms-audit:
+    image: node:18
+    networks:
+      - vpc_private
+
+networks:
+  dmz:
+  vpc_private:
