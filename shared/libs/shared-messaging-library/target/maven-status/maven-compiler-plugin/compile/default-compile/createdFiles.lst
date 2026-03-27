@@ -1,0 +1,9 @@
+uptc\edu\co\shared\messaging\config\KafkaMessagingProperties.class
+uptc\edu\co\shared\messaging\config\KafkaConsumerConfig.class
+uptc\edu\co\shared\messaging\publisher\BasePublisher.class
+uptc\edu\co\shared\messaging\topics\MessagingTopics.class
+uptc\edu\co\shared\messaging\dto\EventDTO.class
+uptc\edu\co\shared\messaging\config\MessagingConfiguration.class
+uptc\edu\co\shared\messaging\subscriber\BaseSubscriber.class
+uptc\edu\co\shared\messaging\config\KafkaProducerConfig.class
+META-INF\spring-configuration-metadata.json

@@ -1,0 +1,30 @@
+{
+  "groups": [
+    {
+      "name": "messaging.kafka",
+      "type": "uptc.edu.co.shared.messaging.config.KafkaMessagingProperties",
+      "sourceType": "uptc.edu.co.shared.messaging.config.KafkaMessagingProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "messaging.kafka.auto-offset-reset",
+      "type": "java.lang.String",
+      "sourceType": "uptc.edu.co.shared.messaging.config.KafkaMessagingProperties",
+      "defaultValue": "earliest"
+    },
+    {
+      "name": "messaging.kafka.bootstrap-servers",
+      "type": "java.lang.String",
+      "sourceType": "uptc.edu.co.shared.messaging.config.KafkaMessagingProperties",
+      "defaultValue": "localhost:9092"
+    },
+    {
+      "name": "messaging.kafka.group-id",
+      "type": "java.lang.String",
+      "sourceType": "uptc.edu.co.shared.messaging.config.KafkaMessagingProperties",
+      "defaultValue": "shared-messaging-group"
+    }
+  ],
+  "hints": []
+}
