@@ -1,8 +1,0 @@
-C:\Users\USER\Documents\UNIVERSIDAD\SISTEMAS_DISTRIBUIDOS\Proyecto (1mer 50%)\monorepo-proyecto\shared\libs\shared-messaging-library\src\main\java\uptc\edu\co\shared\messaging\config\KafkaConsumerConfig.java
-C:\Users\USER\Documents\UNIVERSIDAD\SISTEMAS_DISTRIBUIDOS\Proyecto (1mer 50%)\monorepo-proyecto\shared\libs\shared-messaging-library\src\main\java\uptc\edu\co\shared\messaging\config\KafkaMessagingProperties.java
-C:\Users\USER\Documents\UNIVERSIDAD\SISTEMAS_DISTRIBUIDOS\Proyecto (1mer 50%)\monorepo-proyecto\shared\libs\shared-messaging-library\src\main\java\uptc\edu\co\shared\messaging\config\KafkaProducerConfig.java
-C:\Users\USER\Documents\UNIVERSIDAD\SISTEMAS_DISTRIBUIDOS\Proyecto (1mer 50%)\monorepo-proyecto\shared\libs\shared-messaging-library\src\main\java\uptc\edu\co\shared\messaging\config\MessagingConfiguration.java
-C:\Users\USER\Documents\UNIVERSIDAD\SISTEMAS_DISTRIBUIDOS\Proyecto (1mer 50%)\monorepo-proyecto\shared\libs\shared-messaging-library\src\main\java\uptc\edu\co\shared\messaging\dto\EventDTO.java
-C:\Users\USER\Documents\UNIVERSIDAD\SISTEMAS_DISTRIBUIDOS\Proyecto (1mer 50%)\monorepo-proyecto\shared\libs\shared-messaging-library\src\main\java\uptc\edu\co\shared\messaging\publisher\BasePublisher.java
-C:\Users\USER\Documents\UNIVERSIDAD\SISTEMAS_DISTRIBUIDOS\Proyecto (1mer 50%)\monorepo-proyecto\shared\libs\shared-messaging-library\src\main\java\uptc\edu\co\shared\messaging\subscriber\BaseSubscriber.java
-C:\Users\USER\Documents\UNIVERSIDAD\SISTEMAS_DISTRIBUIDOS\Proyecto (1mer 50%)\monorepo-proyecto\shared\libs\shared-messaging-library\src\main\java\uptc\edu\co\shared\messaging\topics\MessagingTopics.java
