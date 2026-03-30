@@ -6,14 +6,16 @@ services:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=contracts_db
+    volumes:
+      - ./postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - vpc_private
 
   service-registry:
     build: ./service-registry
     container_name: service-registry
-    expose:
-      - "8761"
+    ports:
+      - "8761:8761"
     networks:
       - vpc_private
 
@@ -31,8 +33,7 @@ services:
   ms-auth:
     build: ./ms-auth
     container_name: ms-auth
-    env_file:
-      - proyecto.env
+    env_file: .env
     environment:
       - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
@@ -45,8 +46,7 @@ services:
   ms-contracts:
     build: ./ms-contracts
     container_name: ms-contracts
-    env_file:
-      - proyecto.env
+    env_file: .env
     environment:
       - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
@@ -59,8 +59,7 @@ services:
   ms-suppliers:
     build: ./ms-suppliers
     container_name: ms-suppliers
-    env_file:
-      - proyecto.env
+    env_file: .env
     environment:
       - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
@@ -73,6 +72,8 @@ services:
   ms-audit:
     build: ./ms-audit
     container_name: ms-audit
+    ports:
+      - "3000:3000"
     networks:
       - vpc_private
     depends_on:
