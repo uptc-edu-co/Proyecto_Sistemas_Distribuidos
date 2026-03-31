@@ -32,16 +32,20 @@ async function bootstrap() {
   });
 
   client.logger.level('warn');
-  console.log('Esperando a que el Service Registry esté listo...');
-  setTimeout(() => {
+  console.log('Iniciando proceso de registro en Eureka...');
+
+  const connectToEureka = () => {
     client.start((error) => {
       if (error) {
-        console.log('Error al registrar en Eureka, reintentando en breve...');
+        console.log('Service Registry no disponible aún. Reintentando en 15 segundos...');
+        setTimeout(connectToEureka, 15000);
       } else {
-        console.log('¡Registro en Eureka exitoso!');
+        console.log('¡Registro en Eureka exitoso! ms-audit está en el ecosistema.');
       }
     });
-  }, 15000);
+  };
+
+  setTimeout(connectToEureka, 15000);
 
   console.log(`ms-audit corriendo en el puerto ${port}`);
 }

@@ -28,7 +28,7 @@ services:
       - dmz
       - vpc_private
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - EUREKA_URL=http://service-registry:8761/eureka/
     depends_on:
       - service-registry
 
@@ -80,6 +80,18 @@ services:
       - vpc_private
     depends_on:
       - service-registry
+
+  elasticsearch_db:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+    container_name: elasticsearch_db
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    networks:
+      - vpc_private
 
 networks:
   dmz:
