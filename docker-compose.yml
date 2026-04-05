@@ -4,6 +4,8 @@ services:
     env_file:
       - .env
     container_name: postgres_auth_db
+    ports:
+      - "5445:5432"
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -31,7 +33,9 @@ services:
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=suppliers_db
+      - POSTGRES_DB=suppliers
+    ports:
+      - "5444:5432"
     networks:
       - vpc_private
 
@@ -115,9 +119,11 @@ services:
       dockerfile: ms-suppliers/Dockerfile
       target: development
     container_name: ms-suppliers
+    ports:
+      - "8083:8083"
     env_file: .env
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-suppliers:5432/suppliers_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-suppliers:5432/suppliers
       - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - EUREKA_URL=http://service-registry:8761/eureka/

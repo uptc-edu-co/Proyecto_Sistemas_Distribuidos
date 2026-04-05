@@ -47,6 +47,7 @@ spring:
               lower-case-service-id: true
           default-filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - AddRequestHeader=X-Gateway-Token, my-secret-token
           globalcors:
             cors-configurations:
               '[/**]': ## For all routes
