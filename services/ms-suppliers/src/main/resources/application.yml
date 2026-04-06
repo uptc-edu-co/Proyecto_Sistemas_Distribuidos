@@ -1,33 +1,32 @@
-server:
-  port: 8083
-
 spring:
   application:
     name: ms-suppliers
-  threads:
-    virtual:
-      enabled: true
+  profiles:
+    active: dev
+  
+server:
+  port: ${SERVER_PORT:8083}
+
+--- 
+spring:
+  config:
+    activate:
+      on-profile: dev
+
   datasource:
-    url: jdbc:postgresql://postgres-suppliers:5432/suppliers
-    username: postgres
-    password: "1234" # Es mejor ponerlo entre comillas por si acaso
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/suppliers_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:123}
     driver-class-name: org.postgresql.Driver
-
-  # IMPORTANTE: kafka debe estar alineado con datasource
-  kafka:
-    bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
+    
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
+
+messaging:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 
 # Esta parte es VITAL para que veas el error en la consola de ms-suppliers
 logging:
@@ -37,6 +36,15 @@ logging:
     org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
 gateway:
   secret: ${GATEWAY_SECRET:shared-super-secret}
 
@@ -44,3 +52,5 @@ eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_URL:http://service-registry:8761/eureka/}
+  instance:
+    prefer-ip-address: true

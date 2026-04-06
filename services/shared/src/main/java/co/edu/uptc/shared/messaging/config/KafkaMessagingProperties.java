@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "messaging.kafka")
 public class KafkaMessagingProperties {
 
-    private String bootstrapServers = "localhost:9092";
+    private String bootstrapServers = "broker:29092";
     private String groupId = "shared-messaging-group";
     private String autoOffsetReset = "earliest";
 

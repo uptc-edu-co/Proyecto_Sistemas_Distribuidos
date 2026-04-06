@@ -1,37 +1,32 @@
 package uptc.edu.co.ms_auth.auth.service;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
 import uptc.edu.co.ms_auth.auth.dto.AuthResponse;
 import uptc.edu.co.ms_auth.auth.dto.LoginRequest;
 import uptc.edu.co.ms_auth.auth.dto.RegisterRequest;
 import uptc.edu.co.ms_auth.auth.dto.RegisterResponse;
-import uptc.edu.co.ms_auth.auth.model.Role;
 import uptc.edu.co.ms_auth.auth.model.User;
-import uptc.edu.co.ms_auth.auth.repository.RoleRepository;
 import uptc.edu.co.ms_auth.auth.repository.UserRepository;
 import uptc.edu.co.ms_auth.auth.security.JwtService;
 import uptc.edu.co.ms_auth.auth.security.Sha256Hasher;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 @Service
 public class AuthService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final Sha256Hasher hasher;
     private final JwtService jwtService;
 
     public AuthService(UserRepository userRepository,
-                       RoleRepository roleRepository,
                        Sha256Hasher hasher,
                        JwtService jwtService) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.hasher = hasher;
         this.jwtService = jwtService;
     }
@@ -47,19 +42,10 @@ public class AuthService {
         user.setPasswordHash(hasher.hash(request.getPassword()));
         user.setActive(true);
 
-        Set<Role> roles = new HashSet<>();
-        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
-            roles.addAll(roleRepository.findByNameIn(new HashSet<>(request.getRoles())));
-            if (roles.size() != request.getRoles().size()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more roles are invalid");
-            }
-        }
-
-        user.setRoles(roles);
         User saved = userRepository.save(user);
 
         List<String> assignedRoles = saved.getRoles().stream()
-                .map(Role::getName)
+                .map(role -> role.getName())
                 .sorted()
                 .toList();
 

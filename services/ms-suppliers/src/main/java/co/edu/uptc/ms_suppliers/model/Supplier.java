@@ -1,4 +1,4 @@
-package uptc.edu.co.ms_suppliers.model;
+package co.edu.uptc.ms_suppliers.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,14 +32,15 @@ public class Supplier {
     private String nit;
 
     @Column(nullable = false, length = 255)
-    private String nombre;
+    private String name;
 
     @Column(nullable = false, length = 100)
     private String email;
 
     @Column(nullable = false, length = 20)
-    private String telefono;
+    private String phone;
 
-    @Column(nullable = false)
-    private Boolean estado = true;
+    @Column(name="is_active", nullable = false)
+    @Builder.Default
+    private Boolean isActive = true;
 }

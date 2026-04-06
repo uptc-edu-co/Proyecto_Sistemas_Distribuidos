@@ -1,4 +1,4 @@
-FROM maven:3.9.6-eclipse-temurin-21-alpine AS base
+FROM maven:3.9.6-eclipse-temurin-17-alpine AS base
 WORKDIR /app
 
 # Stage: development
@@ -25,14 +25,14 @@ COPY ms-suppliers/src ./ms-suppliers/src
 RUN mvn clean package -pl ms-suppliers -am -DskipTests
 
 # Stage: staging
-FROM eclipse-temurin:21-jre-alpine AS staging
+FROM eclipse-temurin:17-jre-alpine AS staging
 WORKDIR /app
 COPY --from=builder /app/ms-suppliers/target/*.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=staging
 CMD ["java", "-jar", "app.jar"]
 
 # Stage: production
-FROM eclipse-temurin:21-jre-alpine AS production
+FROM eclipse-temurin:17-jre-alpine AS production
 WORKDIR /app
 COPY --from=builder /app/ms-suppliers/target/*.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=prod
