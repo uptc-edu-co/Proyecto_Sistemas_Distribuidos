@@ -3,33 +3,38 @@ spring:
     name: ms-suppliers
   profiles:
     active: dev
-
+  
 server:
   port: ${SERVER_PORT:8083}
 
----
+--- 
 spring:
   config:
     activate:
       on-profile: dev
-  
+
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/suppliers_db}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:123}
     driver-class-name: org.postgresql.Driver
-  
+    
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
 
-eureka:
-  client:
-    service-url:
-      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
-  instance:
-    prefer-ip-address: true
+messaging:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+
+# Esta parte es VITAL para que veas el error en la consola de ms-suppliers
+logging:
+  level:
+    root: INFO
+    uptc.edu.co: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
 
 management:
   endpoints:
@@ -42,3 +47,10 @@ management:
 
 gateway:
   secret: ${GATEWAY_SECRET:shared-super-secret}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://service-registry:8761/eureka/}
+  instance:
+    prefer-ip-address: true

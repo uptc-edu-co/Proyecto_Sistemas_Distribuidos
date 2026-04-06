@@ -9,13 +9,12 @@ import co.edu.uptc.shared.messaging.dto.EventDTO;
 import co.edu.uptc.shared.messaging.topics.MessagingTopics;
 
 public abstract class BasePublisher {
-    private final KafkaTemplate<String, EventDTO> kafkaTemplate;
+    protected final KafkaTemplate<String, EventDTO> kafkaTemplate;
 
-    protected BasePublisher(KafkaTemplate<String, EventDTO> kafkaTemplate) {
+    public BasePublisher(KafkaTemplate<String, EventDTO> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @SuppressWarnings("null")
     protected void publish(String topic, EventDTO event) {
         if (event.getTimestamp() == null) {
             event.setTimestamp(Instant.now());

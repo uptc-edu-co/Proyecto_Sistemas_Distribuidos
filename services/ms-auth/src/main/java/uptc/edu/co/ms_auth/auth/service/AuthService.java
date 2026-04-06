@@ -1,8 +1,13 @@
 package uptc.edu.co.ms_auth.auth.service;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
 import uptc.edu.co.ms_auth.auth.dto.AuthResponse;
 import uptc.edu.co.ms_auth.auth.dto.LoginRequest;
 import uptc.edu.co.ms_auth.auth.dto.RegisterRequest;
@@ -11,9 +16,6 @@ import uptc.edu.co.ms_auth.auth.model.User;
 import uptc.edu.co.ms_auth.auth.repository.UserRepository;
 import uptc.edu.co.ms_auth.auth.security.JwtService;
 import uptc.edu.co.ms_auth.auth.security.Sha256Hasher;
-
-import java.util.List;
-import java.util.Set;
 
 @Service
 public class AuthService {
@@ -29,6 +31,7 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
+    @Transactional
     public RegisterResponse register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");

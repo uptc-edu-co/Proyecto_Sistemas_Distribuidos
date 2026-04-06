@@ -121,6 +121,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - EUREKA_URL=http://service-registry:8761/eureka/
+      - KAFKA_BOOTSTRAP_SERVERS=broker:29092
     networks:
       - vpc_private
     depends_on:
