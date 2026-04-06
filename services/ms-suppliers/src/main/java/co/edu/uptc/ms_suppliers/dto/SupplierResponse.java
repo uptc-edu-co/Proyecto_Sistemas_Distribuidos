@@ -8,21 +8,21 @@ public class SupplierResponse {
 
     private UUID id;
     private String nit;
-    private String nombre;
+    private String name;
     private String email;
-    private String telefono;
-    private Boolean estado;
+    private String phone;
+    private Boolean is_active;
 
     public SupplierResponse() {
     }
 
-    public SupplierResponse(UUID id, String nit, String nombre, String email, String telefono, Boolean estado) {
+    public SupplierResponse(UUID id, String nit, String name, String email, String phone, Boolean is_active) {
         this.id = id;
         this.nit = nit;
-        this.nombre = nombre;
+        this.name = name;
         this.email = email;
-        this.telefono = telefono;
-        this.estado = estado;
+        this.phone = phone;
+        this.is_active = is_active;
     }
 
     public UUID getId() {
@@ -41,12 +41,12 @@ public class SupplierResponse {
         this.nit = nit;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -57,20 +57,20 @@ public class SupplierResponse {
         this.email = email;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public Boolean getEstado() {
-        return estado;
+    public Boolean getIsActive() {
+        return is_active;
     }
 
-    public void setEstado(Boolean estado) {
-        this.estado = estado;
+    public void setIsActive(Boolean is_active) {
+        this.is_active = is_active;
     }
 
     public static SupplierResponse fromModel(Supplier supplier) {
