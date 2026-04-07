@@ -13,28 +13,28 @@ public class ContractValidationService {
     public void validate(CreateContractRequest req) {
         if (req.getBudget() == null || req.getBudget().compareTo(BigDecimal.ZERO) < 0) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT,
-                    "El presupuesto debe ser mayor o igual a 0");
+                    "The budget must be greater than or equal to 0");
         }
 
         if (req.getStartDate() == null || req.getEndDate() == null) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT,
-                    "Las fechas de inicio y fin son obligatorias");
+                    "The start and end dates are required");
         }
 
         if (!req.getStartDate().isBefore(req.getEndDate())) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT,
-                    "La fecha de inicio debe ser anterior a la fecha de fin");
+                    "The start date must be before the end date");
         }
 
         if (req.getSubject() == null || req.getSubject().isBlank()) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT,
-                    "El objeto del contrato es obligatorio");
+                    "The contract subject is required");
         }
 
-        String[] palabras = req.getSubject().trim().split("\\s+");
-        if (palabras.length > 200) {
+        String[] words = req.getSubject().trim().split("\\s+");
+        if (words.length > 200) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT,
-                    "El objeto del contrato no puede superar las 200 palabras (actual: " + palabras.length + ")");
+                    "The contract subject cannot exceed 200 words (current: " + words.length + ")");
         }
     }
 }
