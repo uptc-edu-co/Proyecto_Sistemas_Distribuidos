@@ -7,7 +7,7 @@
 		<artifactId>services</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>uptc.edu.co</groupId>
+	<groupId>co.edu.uptc</groupId>
 	<artifactId>ms-contracts</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name/>
