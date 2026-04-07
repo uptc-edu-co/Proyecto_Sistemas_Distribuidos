@@ -23,7 +23,16 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+messaging:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 
+logging:
+  level:
+    root: INFO
+    uptc.edu.co: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
 eureka:
   client:
     service-url:
