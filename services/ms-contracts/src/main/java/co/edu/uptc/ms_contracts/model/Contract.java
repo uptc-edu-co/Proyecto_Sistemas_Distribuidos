@@ -23,19 +23,19 @@ public class Contract {
     @Column(name = "uuid", nullable = false, unique = true, updatable = false)
     private UUID uuid;
 
-    @Column(name = "num_contrato", nullable = false, unique = true)
+    @Column(name = "contract_number", nullable = false, unique = true)
     private Long contractNumber;
 
-    @Column(name = "id_proveedor", nullable = false, columnDefinition = "UUID")
+    @Column(name = "supplier_id", nullable = false, columnDefinition = "UUID")
     private UUID supplierId;
 
     @Column(nullable = false, length = 200)
     private String subject;
 
-    @Column(name = "fecha_inicio", nullable = false)
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column(name = "fecha_fin", nullable = false)
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
     @Column(nullable = false, precision = 15, scale = 2)
