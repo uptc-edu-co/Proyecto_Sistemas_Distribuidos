@@ -22,7 +22,7 @@ public class ContractEventPublisher extends BasePublisher {
         try {
             publish("audit.events", event);
         } catch (Exception e) {
-            System.err.println("Error enviando a Kafka: " + e.getMessage());
+            System.err.println("Error sending to kafka: " + e.getMessage());
         }
     }
 }
