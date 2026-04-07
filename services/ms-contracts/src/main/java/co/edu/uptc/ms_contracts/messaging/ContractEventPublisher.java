@@ -5,7 +5,6 @@ import co.edu.uptc.shared.messaging.publisher.BasePublisher;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
 
 @Component
 public class ContractEventPublisher extends BasePublisher {
@@ -14,11 +13,11 @@ public class ContractEventPublisher extends BasePublisher {
         super(kafkaTemplate);
     }
 
-    public void publishContractCreated(UUID contractId) {
+    public void publishContractCreated(Object contract) {
         EventDTO event = new EventDTO();
         event.setAction("CREATE/CONTRACT");
         event.setServiceOrigin("ms-contracts");
-        event.setData(contractId);
+        event.setData(contract);
 
         try {
             publish("audit.events", event);
