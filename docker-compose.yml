@@ -46,7 +46,7 @@ services:
     networks:
       - vpc_private
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8761/ || exit 1"]
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8761/ || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -143,6 +143,7 @@ services:
     environment:
       - ELASTICSEARCH_NODE=http://elasticsearch_db:9200
       - EUREKA_URL=http://service-registry:8761/eureka/
+      - KAFKA_BOOTSTRAP_SERVERS=broker:29092
     depends_on:
       service-registry:
         condition: service_healthy
@@ -181,7 +182,7 @@ services:
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
     networks:
       - vpc_private
-  
+
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-cluster-ui
