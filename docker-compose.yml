@@ -89,6 +89,8 @@ services:
         condition: service_started
       service-registry:
         condition: service_healthy
+      kafka-setup:
+        condition: service_completed_successfully
 
   ms-contracts:
     build:
@@ -110,6 +112,8 @@ services:
         condition: service_started
       service-registry:
         condition: service_healthy
+      kafka-setup:
+        condition: service_completed_successfully
 
   ms-suppliers:
     build:
@@ -131,6 +135,8 @@ services:
         condition: service_started
       service-registry:
         condition: service_healthy
+      kafka-setup:
+        condition: service_completed_successfully
 
   ms-audit:
     build:
@@ -141,6 +147,7 @@ services:
     networks:
       - vpc_private
     environment:
+      - ELASTIC_CLIENT_APIVERSIONING=true
       - ELASTICSEARCH_NODE=http://elasticsearch_db:9200
       - EUREKA_URL=http://service-registry:8761/eureka/
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
@@ -149,6 +156,8 @@ services:
         condition: service_healthy
       elasticsearch_db:
         condition: service_started
+      kafka-setup:
+        condition: service_completed_successfully
 
   elasticsearch_db:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
@@ -166,6 +175,12 @@ services:
     image: apache/kafka:latest
     hostname: broker
     container_name: broker
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 10
+      start_period: 60s
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
@@ -184,6 +199,19 @@ services:
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
     networks:
       - vpc_private
+
+  kafka-setup:
+    image: apache/kafka:latest
+    container_name: kafka-setup
+    networks:
+      - vpc_private
+    depends_on:
+      broker:
+        condition: service_healthy
+    command: >
+      bash -c "
+      /opt/kafka/bin/kafka-topics.sh --create --if-not-exists --topic audit.events --bootstrap-server broker:29092 --partitions 1 --replication-factor 1
+      "
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest

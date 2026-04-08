@@ -3,18 +3,18 @@ WORKDIR /app
 
 # Stage: development
 FROM base AS development
-COPY package.json package-lock.json ./
+COPY package.json .npmrc* ./
 RUN npm install
 COPY . .
 CMD ["npm", "run", "start:dev"]
 
 # Stage: builder
 FROM base AS builder
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json .npmrc* ./
+RUN npm install
 COPY . .
 RUN npm run build
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
 # Stage: staging
 FROM base AS staging

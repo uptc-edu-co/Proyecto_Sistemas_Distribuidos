@@ -17,6 +17,10 @@ async function bootstrap() {
       consumer: {
         groupId: 'ms-audit'
       },
+      subscribe: {
+        fromBeginning: true,
+        allowAutoTopicCreation: true,
+      },
     },
   });
 
