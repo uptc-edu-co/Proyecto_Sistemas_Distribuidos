@@ -16,8 +16,17 @@ export class AppController {
   async getAuditEvents(
     @Query('contractId') contractId?: string,
     @Query('action') action?: string,
+    @Query('serviceOrigin') serviceOrigin?: string,
+    @Query('from') from?: string,
+    @Query('size') size?: string,
   ) {
-    const filters = { contractId, action };
+    const filters = {
+      contractId,
+      action,
+      serviceOrigin,
+      from: from ? parseInt(from, 10) : undefined,
+      size: size ? parseInt(size, 10) : undefined,
+    };
     return this.appService.getEvents(filters);
   }
 
