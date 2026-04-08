@@ -41,6 +41,13 @@ spring:
                 - Path=/ms-suppliers/**
               filters:
                 - StripPrefix=1
+                
+            - id: ms-audit
+              uri: lb://ms-audit
+              predicates:
+                - Path=/ms-audit/**
+              filters:
+                - StripPrefix=1
           discovery:
             locator:
               enabled: true
