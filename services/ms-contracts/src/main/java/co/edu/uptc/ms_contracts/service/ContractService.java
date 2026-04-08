@@ -53,4 +53,43 @@ public class ContractService {
 
         return ContractResponse.fromModel(contract);
     }
+
+    @Transactional
+    public ContractResponse updateContract(Long contractNumber, CreateContractRequest req) {
+
+        // 1. Obtener versión actual
+        Contract current = repository
+                .findTopByContractNumberOrderByVersionDesc(contractNumber)
+                .orElseThrow(() -> new RuntimeException("Contrato no encontrado"));
+
+        // 2. Crear nueva versión
+        Contract newVersion = new Contract();
+
+        // 3. Copiar datos del contrato actual (historial)
+        newVersion.setContractNumber(current.getContractNumber());
+        newVersion.setSupplierId(current.getSupplierId());
+        newVersion.setSubject(current.getSubject());
+        newVersion.setStartDate(current.getStartDate());
+        newVersion.setEndDate(current.getEndDate());
+
+        // 4. Incrementar versión
+        newVersion.setVersion(current.getVersion() + 1);
+
+        // 5. Manejo de estado activo
+        current.setIsActive(false);
+        newVersion.setIsActive(true);
+
+        // 6. Aplicar cambios (simulamos campos editables)
+        newVersion.setBudget(req.getBudget());
+        newVersion.setStatus(current.getStatus());
+
+        // 7. Guardar ambos
+        repository.save(current);
+        repository.save(newVersion);
+
+        log.info("Contract versioned: contractNumber={} newVersion={}",
+                contractNumber, newVersion.getVersion());
+
+        return ContractResponse.fromModel(newVersion);
+    }
 }
