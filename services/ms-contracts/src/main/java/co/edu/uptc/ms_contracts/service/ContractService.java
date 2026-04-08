@@ -1,5 +1,7 @@
 package co.edu.uptc.ms_contracts.service;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -7,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import co.edu.uptc.ms_contracts.client.SupplierClient;
 import co.edu.uptc.ms_contracts.dto.ContractResponse;
 import co.edu.uptc.ms_contracts.dto.CreateContractRequest;
+import co.edu.uptc.ms_contracts.dto.UpdateContractRequest;
 import co.edu.uptc.ms_contracts.messaging.ContractEventPublisher;
 import co.edu.uptc.ms_contracts.model.Contract;
 import co.edu.uptc.ms_contracts.repository.ContractRepository;
@@ -47,10 +50,50 @@ public class ContractService {
         contract.setContractNumber(repository.count() + 1);
 
         contract = repository.save(contract);
-        log.info("Contract created id={} uuid={}", contract.getId(), contract.getUuid());
+        log.info("Contract created id={} uuid={}", contract.getId(), contract.getId());
 
         eventPublisher.publishContractCreated(contract);
 
         return ContractResponse.fromModel(contract);
     }
+
+    @Transactional
+    public ContractResponse updateContract(UUID id, UpdateContractRequest req) {
+
+        // 1. Buscar contrato
+        Contract contract = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Contrato no encontrado"));
+
+        boolean changed = false;
+
+        // 2. Validar y aplicar cambios solo permitidos
+
+        if (req.getStatus() != null && !req.getStatus().equals(contract.getStatus())) {
+            contract.setStatus(req.getStatus());
+            changed = true;
+        }
+
+        if (req.getBudget() != null && req.getBudget().compareTo(contract.getBudget()) != 0) {
+            contract.setBudget(req.getBudget());
+            changed = true;
+        }
+
+        // 3. Si NO hay cambios → NO aumentar versión
+        if (!changed) {
+            return ContractResponse.fromModel(contract);
+        }
+
+        // 4. Incrementar versión
+        contract.setVersion(contract.getVersion() + 1);
+
+        // 5. Guardar
+        contract = repository.save(contract);
+
+        // 6. Publicar evento
+        eventPublisher.publishContractUpdated(contract);
+
+        return ContractResponse.fromModel(contract);
+    }
+
+    
 }
