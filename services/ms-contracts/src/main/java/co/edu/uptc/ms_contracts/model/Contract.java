@@ -17,11 +17,8 @@ import java.util.UUID;
 public class Contract {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "uuid", nullable = false, unique = true, updatable = false)
-    private UUID uuid;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "contract_number", nullable = false, unique = true)
     private Long contractNumber;
@@ -49,7 +46,6 @@ public class Contract {
 
     @PrePersist
     private void prePersist() {
-        this.uuid = UUID.randomUUID();
         this.version = 1;
         this.status = "In preparation";
     }

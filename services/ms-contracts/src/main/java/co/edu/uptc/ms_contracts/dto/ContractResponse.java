@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class ContractResponse {
 
-    private UUID uuid;
+    private UUID id;
     private Long contractNumber;
     private UUID supplierId;
     private String subject;
@@ -20,7 +20,7 @@ public class ContractResponse {
 
     public static ContractResponse fromModel(Contract c) {
         ContractResponse r = new ContractResponse();
-        r.uuid = c.getUuid();
+        r.id = c.getId();
         r.contractNumber = c.getContractNumber();
         r.supplierId = c.getSupplierId();
         r.subject = c.getSubject();
@@ -32,7 +32,7 @@ public class ContractResponse {
         return r;
     }
 
-    public UUID getUuid() { return uuid; }
+    public UUID getId() { return id; }
     public Long getContractNumber() { return contractNumber; }
     public UUID getSupplierId() { return supplierId; }
     public String getSubject() { return subject; }

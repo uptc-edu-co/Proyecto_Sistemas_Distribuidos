@@ -36,6 +36,10 @@ public class ContractEventPublisher extends BasePublisher {
         event.setAction("CONTRACT_UPDATED");
         event.setData(contract);
 
-        kafkaTemplate.send("contract-updated", event);
+        try {
+            publish("audit.events", event);
+        } catch (Exception e) {
+            System.err.println("Error sending to kafka: " + e.getMessage());
+        }
     }
 }

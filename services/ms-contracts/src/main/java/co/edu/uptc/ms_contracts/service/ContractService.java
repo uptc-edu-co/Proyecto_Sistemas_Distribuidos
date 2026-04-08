@@ -1,5 +1,7 @@
 package co.edu.uptc.ms_contracts.service;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -48,7 +50,7 @@ public class ContractService {
         contract.setContractNumber(repository.count() + 1);
 
         contract = repository.save(contract);
-        log.info("Contract created id={} uuid={}", contract.getId(), contract.getUuid());
+        log.info("Contract created id={} uuid={}", contract.getId(), contract.getId());
 
         eventPublisher.publishContractCreated(contract);
 
@@ -56,7 +58,7 @@ public class ContractService {
     }
 
     @Transactional
-    public ContractResponse updateContract(Long id, UpdateContractRequest req) {
+    public ContractResponse updateContract(UUID id, UpdateContractRequest req) {
 
         // 1. Buscar contrato
         Contract contract = repository.findById(id)
