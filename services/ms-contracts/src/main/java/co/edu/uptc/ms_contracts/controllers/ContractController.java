@@ -35,6 +35,6 @@ public class ContractController {
             @PathVariable Long id,
             @RequestBody UpdateContractRequest req) {
 
-        return contractService.updateContract(id, req);
+        return service.updateContract(id, req);
     }
 }
