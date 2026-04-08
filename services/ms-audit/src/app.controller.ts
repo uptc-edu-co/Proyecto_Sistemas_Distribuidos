@@ -1,7 +1,9 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Headers, Query, UseGuards } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { EventDTO } from './audit.dto';
+import { RequireScopes } from './decorators/roles.decorator';
+import { RolesGuard } from './guards/roles.guard';
 
 @Controller()
 export class AppController {
@@ -13,7 +15,10 @@ export class AppController {
   }
 
   @Get('audit')
+  @UseGuards(RolesGuard)
+  @RequireScopes('view:audit')
   async getAuditEvents(
+    @Headers('x-user') user: string,
     @Query('contractId') contractId?: string,
     @Query('action') action?: string,
     @Query('serviceOrigin') serviceOrigin?: string,
