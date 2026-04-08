@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import co.edu.uptc.ms_contracts.dto.ContractResponse;
 import co.edu.uptc.ms_contracts.dto.CreateContractRequest;
+import co.edu.uptc.ms_contracts.dto.UpdateContractRequest;
 import co.edu.uptc.ms_contracts.service.ContractService;
 
 import java.net.URI;
@@ -27,5 +28,13 @@ public class ContractController {
         ContractResponse response = service.createContract(req);
         URI location = URI.create("/contracts/" + response.getUuid());
         return ResponseEntity.created(location).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ContractResponse updateContract(
+            @PathVariable Long id,
+            @RequestBody UpdateContractRequest req) {
+
+        return contractService.updateContract(id, req);
     }
 }

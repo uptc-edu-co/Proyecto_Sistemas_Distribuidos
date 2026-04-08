@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import co.edu.uptc.ms_contracts.client.SupplierClient;
 import co.edu.uptc.ms_contracts.dto.ContractResponse;
 import co.edu.uptc.ms_contracts.dto.CreateContractRequest;
+import co.edu.uptc.ms_contracts.dto.UpdateContractRequest;
 import co.edu.uptc.ms_contracts.messaging.ContractEventPublisher;
 import co.edu.uptc.ms_contracts.model.Contract;
 import co.edu.uptc.ms_contracts.repository.ContractRepository;
@@ -55,41 +56,42 @@ public class ContractService {
     }
 
     @Transactional
-    public ContractResponse updateContract(Long contractNumber, CreateContractRequest req) {
+    public ContractResponse updateContract(Long id, UpdateContractRequest req) {
 
-        // 1. Obtener versión actual
-        Contract current = repository
-                .findTopByContractNumberOrderByVersionDesc(contractNumber)
+        // 1. Buscar contrato
+        Contract contract = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Contrato no encontrado"));
 
-        // 2. Crear nueva versión
-        Contract newVersion = new Contract();
+        boolean changed = false;
 
-        // 3. Copiar datos del contrato actual (historial)
-        newVersion.setContractNumber(current.getContractNumber());
-        newVersion.setSupplierId(current.getSupplierId());
-        newVersion.setSubject(current.getSubject());
-        newVersion.setStartDate(current.getStartDate());
-        newVersion.setEndDate(current.getEndDate());
+        // 2. Validar y aplicar cambios solo permitidos
+
+        if (req.getStatus() != null && !req.getStatus().equals(contract.getStatus())) {
+            contract.setStatus(req.getStatus());
+            changed = true;
+        }
+
+        if (req.getBudget() != null && req.getBudget().compareTo(contract.getBudget()) != 0) {
+            contract.setBudget(req.getBudget());
+            changed = true;
+        }
+
+        // 3. Si NO hay cambios → NO aumentar versión
+        if (!changed) {
+            return ContractResponse.fromModel(contract);
+        }
 
         // 4. Incrementar versión
-        newVersion.setVersion(current.getVersion() + 1);
+        contract.setVersion(contract.getVersion() + 1);
 
-        // 5. Manejo de estado activo
-        current.setIsActive(false);
-        newVersion.setIsActive(true);
+        // 5. Guardar
+        contract = repository.save(contract);
 
-        // 6. Aplicar cambios (simulamos campos editables)
-        newVersion.setBudget(req.getBudget());
-        newVersion.setStatus(current.getStatus());
+        // 6. Publicar evento
+        eventPublisher.publishContractUpdated(contract);
 
-        // 7. Guardar ambos
-        repository.save(current);
-        repository.save(newVersion);
-
-        log.info("Contract versioned: contractNumber={} newVersion={}",
-                contractNumber, newVersion.getVersion());
-
-        return ContractResponse.fromModel(newVersion);
+        return ContractResponse.fromModel(contract);
     }
+
+    
 }

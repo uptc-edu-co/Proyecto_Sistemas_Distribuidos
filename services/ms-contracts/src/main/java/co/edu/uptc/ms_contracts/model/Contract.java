@@ -23,7 +23,7 @@ public class Contract {
     @Column(name = "uuid", nullable = false, unique = true, updatable = false)
     private UUID uuid;
 
-    @Column(name = "contract_number", nullable = false)
+    @Column(name = "contract_number", nullable = false, unique = true)
     private Long contractNumber;
 
     @Column(name = "supplier_id", nullable = false, columnDefinition = "UUID")
@@ -47,14 +47,10 @@ public class Contract {
     @Column(nullable = false)
     private Integer version;
 
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
-
     @PrePersist
     private void prePersist() {
         this.uuid = UUID.randomUUID();
         this.version = 1;
         this.status = "In preparation";
-        this.isActive = true;
     }
 }
