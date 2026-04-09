@@ -1,6 +1,5 @@
 package uptc.edu.co.ms_auth.auth.service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,9 +12,7 @@ import uptc.edu.co.ms_auth.auth.dto.AuthResponse;
 import uptc.edu.co.ms_auth.auth.dto.LoginRequest;
 import uptc.edu.co.ms_auth.auth.dto.RegisterRequest;
 import uptc.edu.co.ms_auth.auth.dto.RegisterResponse;
-import uptc.edu.co.ms_auth.auth.model.Role;
 import uptc.edu.co.ms_auth.auth.model.User;
-import uptc.edu.co.ms_auth.auth.repository.RoleRepository;
 import uptc.edu.co.ms_auth.auth.repository.UserRepository;
 import uptc.edu.co.ms_auth.auth.security.JwtService;
 import uptc.edu.co.ms_auth.auth.security.Sha256Hasher;
@@ -23,16 +20,13 @@ import uptc.edu.co.ms_auth.auth.security.Sha256Hasher;
 @Service
 public class AuthService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final Sha256Hasher hasher;
     private final JwtService jwtService;
 
     public AuthService(UserRepository userRepository,
-                       RoleRepository roleRepository,
                        Sha256Hasher hasher,
                        JwtService jwtService) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.hasher = hasher;
         this.jwtService = jwtService;
     }
@@ -48,26 +42,9 @@ public class AuthService {
         user.setPasswordHash(hasher.hash(request.getPassword()));
         user.setActive(true);
 
-        // Assign requested roles, default to USER if none provided
-        List<String> requestedRoles = (request.getRoles() != null && !request.getRoles().isEmpty())
-                ? request.getRoles()
-                : List.of("USER");
-
-        Set<Role> assignedRoles = new HashSet<>();
-        for (String roleName : requestedRoles) {
-            roleRepository.findByName(roleName.toUpperCase())
-                    .ifPresent(assignedRoles::add);
-        }
-        user.setRoles(assignedRoles);
-
         User saved = userRepository.save(user);
 
-        List<String> roleNames = saved.getRoles().stream()
-                .map(Role::getName)
-                .sorted()
-                .toList();
-
-        return new RegisterResponse(saved.getId(), saved.getUsername(), saved.isActive(), roleNames);
+        return new RegisterResponse(saved.getId(), saved.getUsername(), saved.isActive());
     }
 
     public AuthResponse login(LoginRequest request) {
