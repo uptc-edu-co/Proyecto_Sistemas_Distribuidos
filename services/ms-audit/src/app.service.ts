@@ -41,9 +41,23 @@ export class AppService implements OnModuleInit {
 
   async persistEvent(event: EventDTO) {
     try {
+      const eventToPersist: any = { ...event };
+      if (eventToPersist.timestamp) {
+        const tsNum = Number(eventToPersist.timestamp);
+        if (!isNaN(tsNum)) {
+          let ts = tsNum;
+          if (ts < 1000000000000) {
+            ts = Math.floor(ts * 1000);
+          } else {
+            ts = Math.floor(ts);
+          }
+          eventToPersist.timestamp = new Date(ts).toISOString();
+        }
+      }
+
       await this.elasticsearchService.index({
         index: AUDIT_INDEX,
-        document: event,
+        document: eventToPersist,
       });
       this.logger.log('Evento guardado correctamente en Elasticsearch');
     } catch (error) {

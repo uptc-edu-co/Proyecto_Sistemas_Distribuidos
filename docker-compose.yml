@@ -89,8 +89,8 @@ services:
         condition: service_started
       service-registry:
         condition: service_healthy
-      kafka-setup:
-        condition: service_completed_successfully
+      broker:
+        condition: service_healthy
 
   ms-contracts:
     build:
@@ -112,8 +112,8 @@ services:
         condition: service_started
       service-registry:
         condition: service_healthy
-      kafka-setup:
-        condition: service_completed_successfully
+      broker:
+        condition: service_healthy
 
   ms-suppliers:
     build:
@@ -135,8 +135,8 @@ services:
         condition: service_started
       service-registry:
         condition: service_healthy
-      kafka-setup:
-        condition: service_completed_successfully
+      broker:
+        condition: service_healthy
 
   ms-audit:
     build:
@@ -156,11 +156,11 @@ services:
         condition: service_healthy
       elasticsearch_db:
         condition: service_started
-      kafka-setup:
-        condition: service_completed_successfully
+      broker:
+        condition: service_healthy
 
   elasticsearch_db:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.3.3
     container_name: elasticsearch_db
     environment:
       - discovery.type=single-node
@@ -199,19 +199,6 @@ services:
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
     networks:
       - vpc_private
-
-  kafka-setup:
-    image: apache/kafka:latest
-    container_name: kafka-setup
-    networks:
-      - vpc_private
-    depends_on:
-      broker:
-        condition: service_healthy
-    command: >
-      bash -c "
-      /opt/kafka/bin/kafka-topics.sh --create --if-not-exists --topic audit.events --bootstrap-server broker:29092 --partitions 1 --replication-factor 1
-      "
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
