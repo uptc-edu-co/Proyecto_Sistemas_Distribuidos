@@ -17,7 +17,7 @@ public class ContractEventPublisher extends BasePublisher {
 
     public void publishContractCreated(Object contract) {
         EventDTO event = new EventDTO();
-        event.setAction("CREATE/CONTRACT");
+        event.setAction("CREATE_CONTRACT");
         event.setServiceOrigin("ms-contracts");
         event.setData(contract);
 
@@ -33,7 +33,7 @@ public class ContractEventPublisher extends BasePublisher {
         EventDTO event = new EventDTO();
         event.setTimestamp(Instant.now());
         event.setServiceOrigin("ms-contracts");
-        event.setAction("CONTRACT_UPDATED");
+        event.setAction("UPDATE_CONTRACT");
         event.setData(contract);
 
         try {

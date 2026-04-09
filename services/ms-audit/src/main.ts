@@ -1,12 +1,32 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { Eureka } from 'eureka-js-client';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const port = 3000;
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers: [process.env.KAFKA_BOOTSTRAP_SERVERS || 'localhost:9092']
+      },
+      consumer: {
+        groupId: 'ms-audit'
+      },
+      subscribe: {
+        fromBeginning: true,
+        allowAutoTopicCreation: true,
+      },
+    },
+  });
+
+  await app.startAllMicroservices();
   await app.listen(port);
+  console.log(`ms-audit corriendo en el puerto ${port} y escuchando en Kafka`);
 
   const client = new Eureka({
     instance: {
@@ -46,7 +66,5 @@ async function bootstrap() {
   };
 
   setTimeout(connectToEureka, 15000);
-
-  console.log(`ms-audit corriendo en el puerto ${port}`);
 }
 bootstrap();

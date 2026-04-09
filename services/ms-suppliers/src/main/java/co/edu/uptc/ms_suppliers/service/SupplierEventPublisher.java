@@ -16,6 +16,7 @@ public class SupplierEventPublisher extends BasePublisher {
     public void sendAuditLog(String action, Object data) {
         EventDTO event = new EventDTO();
         event.setAction(action);
+        event.setServiceOrigin("ms-suppliers");
         event.setData(data);
 
         try {

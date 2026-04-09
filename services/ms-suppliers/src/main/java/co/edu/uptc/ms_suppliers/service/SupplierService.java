@@ -44,6 +44,7 @@ public class SupplierService {
         applyUpdates(existing, updates);
 
         Supplier saved = supplierRepository.save(existing);
+        publishAuditEvent("UPDATE_SUPPLIER", saved);
         return SupplierResponse.fromModel(saved);
     }
 

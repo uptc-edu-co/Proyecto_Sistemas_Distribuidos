@@ -46,11 +46,11 @@ services:
     networks:
       - vpc_private
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8761/ || exit 1"]
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8761/ || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 300s
 
   api-gateway:
     build:
@@ -89,6 +89,8 @@ services:
         condition: service_started
       service-registry:
         condition: service_healthy
+      broker:
+        condition: service_healthy
 
   ms-contracts:
     build:
@@ -109,6 +111,8 @@ services:
       postgres-contracts:
         condition: service_started
       service-registry:
+        condition: service_healthy
+      broker:
         condition: service_healthy
 
   ms-suppliers:
@@ -131,6 +135,8 @@ services:
         condition: service_started
       service-registry:
         condition: service_healthy
+      broker:
+        condition: service_healthy
 
   ms-audit:
     build:
@@ -141,21 +147,27 @@ services:
     networks:
       - vpc_private
     environment:
+      - ELASTIC_CLIENT_APIVERSIONING=true
       - ELASTICSEARCH_NODE=http://elasticsearch_db:9200
       - EUREKA_URL=http://service-registry:8761/eureka/
+      - KAFKA_BOOTSTRAP_SERVERS=broker:29092
     depends_on:
       service-registry:
         condition: service_healthy
       elasticsearch_db:
         condition: service_started
+      broker:
+        condition: service_healthy
 
   elasticsearch_db:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.3.3
     container_name: elasticsearch_db
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
     networks:
       - vpc_private
 
@@ -163,6 +175,12 @@ services:
     image: apache/kafka:latest
     hostname: broker
     container_name: broker
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 10
+      start_period: 60s
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
@@ -181,7 +199,7 @@ services:
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
     networks:
       - vpc_private
-  
+
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-cluster-ui

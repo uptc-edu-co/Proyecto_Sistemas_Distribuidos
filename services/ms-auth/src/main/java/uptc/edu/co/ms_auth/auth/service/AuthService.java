@@ -44,12 +44,7 @@ public class AuthService {
 
         User saved = userRepository.save(user);
 
-        List<String> assignedRoles = saved.getRoles().stream()
-                .map(role -> role.getName())
-                .sorted()
-                .toList();
-
-        return new RegisterResponse(saved.getId(), saved.getUsername(), saved.isActive(), assignedRoles);
+        return new RegisterResponse(saved.getId(), saved.getUsername(), saved.isActive());
     }
 
     public AuthResponse login(LoginRequest request) {
