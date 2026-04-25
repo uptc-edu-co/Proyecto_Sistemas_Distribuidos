@@ -33,18 +33,37 @@ public class AuthService {
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
+        String normalizedEmail = normalizeEmail(request.getUsername());
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
         }
 
+        if (normalizedEmail != null && userRepository.existsByEmailIgnoreCase(normalizedEmail)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+        }
+
         User user = new User();
         user.setUsername(request.getUsername());
+        user.setEmail(normalizedEmail);
         user.setPasswordHash(hasher.hash(request.getPassword()));
         user.setActive(true);
 
         User saved = userRepository.save(user);
 
         return new RegisterResponse(saved.getId(), saved.getUsername(), saved.isActive());
+    }
+
+    private String normalizeEmail(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        String trimmed = value.trim();
+        if (!trimmed.contains("@")) {
+            return null;
+        }
+
+        return trimmed.toLowerCase();
     }
 
     public AuthResponse login(LoginRequest request) {

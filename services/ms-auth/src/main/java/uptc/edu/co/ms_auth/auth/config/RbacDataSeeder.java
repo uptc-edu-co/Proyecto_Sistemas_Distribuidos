@@ -30,6 +30,7 @@ public class RbacDataSeeder {
             seedRole(roleRepository, permissions, RoleScopeCatalog.ROLE_ADMIN, RoleScopeCatalog.scopesForRole(RoleScopeCatalog.ROLE_ADMIN));
             seedRole(roleRepository, permissions, RoleScopeCatalog.ROLE_OFFICER, RoleScopeCatalog.scopesForRole(RoleScopeCatalog.ROLE_OFFICER));
             seedRole(roleRepository, permissions, RoleScopeCatalog.ROLE_AUDITOR, RoleScopeCatalog.scopesForRole(RoleScopeCatalog.ROLE_AUDITOR));
+            seedRole(roleRepository, permissions, RoleScopeCatalog.ROLE_USER, RoleScopeCatalog.scopesForRole(RoleScopeCatalog.ROLE_USER));
         };
     }
 

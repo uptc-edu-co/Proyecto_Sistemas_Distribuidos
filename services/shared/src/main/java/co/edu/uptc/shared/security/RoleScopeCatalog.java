@@ -9,6 +9,7 @@ public final class RoleScopeCatalog {
     public static final String ROLE_ADMIN = "ADMIN";
     public static final String ROLE_OFFICER = "OFFICER";
     public static final String ROLE_AUDITOR = "AUDITOR";
+    public static final String ROLE_USER = "USER";
 
     public static final String CREATE_CONTRACT = "create:contract";
     public static final String UPDATE_CONTRACT = "update:contracts";
@@ -43,7 +44,8 @@ public final class RoleScopeCatalog {
                     VIEW_CONTRACTS,
                     VIEW_CONTRACTS_BY_ID,
                     VIEW_AUDIT
-            )
+            ),
+            ROLE_USER, Set.of()
     );
 
     private RoleScopeCatalog() {
