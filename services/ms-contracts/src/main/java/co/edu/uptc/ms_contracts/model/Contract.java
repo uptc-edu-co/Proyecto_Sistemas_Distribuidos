@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -44,9 +45,13 @@ public class Contract {
     @Column(nullable = false)
     private Integer version;
 
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
     @PrePersist
     private void prePersist() {
         this.version = 1;
         this.status = "In preparation";
+        this.createdAt = LocalDateTime.now();
     }
 }

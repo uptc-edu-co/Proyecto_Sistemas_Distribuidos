@@ -23,21 +23,24 @@ public class ContractService {
     private final SupplierClient supplierClient;
     private final ContractValidationService validationService;
     private final ContractEventPublisher eventPublisher;
+    private final ContractPdfService pdfService;
 
     public ContractService(ContractRepository repository,
                            SupplierClient supplierClient,
                            ContractValidationService validationService,
-                           ContractEventPublisher eventPublisher) {
+                           ContractEventPublisher eventPublisher,
+                           ContractPdfService pdfService) {
         this.repository = repository;
         this.supplierClient = supplierClient;
         this.validationService = validationService;
         this.eventPublisher = eventPublisher;
+        this.pdfService = pdfService;
     }
 
     @Transactional
     public ContractResponse createContract(CreateContractRequest req) {
         
-        supplierClient.getSupplierById(req.getSupplierId());
+        var supplier = supplierClient.getSupplierById(req.getSupplierId());
 
         validationService.validate(req);
 
@@ -53,6 +56,12 @@ public class ContractService {
         log.info("Contract created id={} uuid={}", contract.getId(), contract.getId());
 
         eventPublisher.publishContractCreated(contract);
+
+        try {
+            pdfService.generateAndStore(contract, supplier);
+        } catch (Exception ex) {
+            log.warn("PDF generation failed for contract id={}", contract.getId(), ex);
+        }
 
         return ContractResponse.fromModel(contract);
     }
