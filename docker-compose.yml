@@ -40,10 +40,7 @@ services:
       context: ./service-registry
       dockerfile: Dockerfile
       target: development
-    container_name: service-registry    # example login
-    curl -s -X POST http://localhost:8080/auth/login \
-      -H "Content-Type: application/json" \
-      -d '{"email":"admin@demo.com","password":"123456"}'
+    container_name: service-registry
     ports:
       - "8761:8761"
     networks:
