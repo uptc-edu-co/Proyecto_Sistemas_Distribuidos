@@ -1,7 +1,9 @@
 package co.edu.uptc.shared.security;
 
+import co.edu.uptc.shared.exceptions.ErrorResponse;
 import co.edu.uptc.shared.security.annotations.RequiresScope;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -24,12 +26,13 @@ import java.util.List;
  *   <li>Si el handler no está anotado con {@code @RequiresScope} → pasa.</li>
  *   <li>Lee {@code X-Scopes} (lista separada por comas).</li>
  *   <li>Si el scope requerido está en la lista → pasa.</li>
- *   <li>Si no → {@code 403 Forbidden}.</li>
+ *   <li>Si no → {@code 403 Forbidden} con estructura estándar {status, message, code}.</li>
  * </ol>
  */
 public class ScopeInterceptor implements HandlerInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(ScopeInterceptor.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Override
     public boolean preHandle(HttpServletRequest request,
@@ -61,11 +64,14 @@ public class ScopeInterceptor implements HandlerInterceptor {
                 request.getMethod(),
                 request.getRequestURI());
 
+        ErrorResponse body = new ErrorResponse(
+                HttpServletResponse.SC_FORBIDDEN,
+                "Required scope: " + required,
+                "FORBIDDEN");
+
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write("""
-                {"error":"Forbidden","message":"Required scope: %s"}
-                """.formatted(required));
+        response.getWriter().write(MAPPER.writeValueAsString(body));
 
         return false; // corta la cadena, el controller no se ejecuta
     }
