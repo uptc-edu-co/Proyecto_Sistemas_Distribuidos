@@ -110,7 +110,8 @@ public class GatewayAuthFilter extends OncePerRequestFilter {
     protected boolean isPublicPath(String path) {
         return path.startsWith("/actuator")
                 || path.startsWith("/auth/login")
-                || path.startsWith("/auth/register");
+                || path.startsWith("/auth/register")
+                || path.startsWith("/auth/oauth2");
     }
 
     /** Writes a 403 response with a plain-text body. */

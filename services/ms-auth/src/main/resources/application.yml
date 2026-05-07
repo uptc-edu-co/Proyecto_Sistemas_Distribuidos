@@ -43,3 +43,14 @@ management:
 jwt:
   secret: ${JWT_SECRET_BASE64:c3VwZXItc2VjcmV0LWtleS1mb3Itand0LW11c3QtYmUtMzItYnl0ZXMtbWluaW11bQ==}
   expiration-seconds: ${JWT_EXPIRATION_SECONDS:3600}
+
+oauth2:
+  google:
+    client-id: ${OAUTH2_GOOGLE_CLIENT_ID:}
+    client-secret: ${OAUTH2_GOOGLE_CLIENT_SECRET:}
+    redirect-uri: ${OAUTH2_GOOGLE_REDIRECT_URI:http://localhost:8081/auth/oauth2/callback/google}
+    auth-uri: ${OAUTH2_GOOGLE_AUTH_URI:https://accounts.google.com/o/oauth2/v2/auth}
+    token-uri: ${OAUTH2_GOOGLE_TOKEN_URI:https://oauth2.googleapis.com/token}
+    user-info-uri: ${OAUTH2_GOOGLE_USERINFO_URI:https://openidconnect.googleapis.com/v1/userinfo}
+    scopes: ${OAUTH2_GOOGLE_SCOPES:openid email profile}
+  post-login-redirect: ${OAUTH2_POST_LOGIN_REDIRECT:http://localhost:3000/oauth2/callback}

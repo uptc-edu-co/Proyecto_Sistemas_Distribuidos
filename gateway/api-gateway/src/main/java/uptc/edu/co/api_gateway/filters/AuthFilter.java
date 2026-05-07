@@ -89,6 +89,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private boolean isPublicPath(String path) {
         return path.equals("/ms-auth/auth/login")
                 || path.equals("/ms-auth/auth/register")
+                || path.startsWith("/ms-auth/auth/oauth2")
                 || path.startsWith("/ms-auth/actuator");
     }
 
