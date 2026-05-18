@@ -38,8 +38,6 @@ public final class RoleScopeCatalog {
                     UPDATE_CONTRACT,
                     VIEW_CONTRACTS,
                     VIEW_CONTRACTS_BY_ID,
-                    CREATE_SUPPLIER,
-                    UPDATE_SUPPLIER,
                     VIEW_SUPPLIERS
             ),
             ROLE_AUDITOR, Set.of(
