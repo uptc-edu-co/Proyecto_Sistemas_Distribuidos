@@ -33,12 +33,24 @@ public class AuthService {
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
-        String normalizedEmail = normalizeEmail(request.getUsername());
+        // Validate username format
+        if (!isValidUsername(request.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid username format. Username must be 3-100 characters and contain only letters, numbers, dots, or underscores.");
+        }
+
+        // Validate email format
+        String normalizedEmail = normalizeEmail(request.getEmail());
+        if (normalizedEmail == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A valid email address is required.");
+        }
+
+        // Check for duplicate username
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
         }
 
-        if (normalizedEmail != null && userRepository.existsByEmailIgnoreCase(normalizedEmail)) {
+        // Check for duplicate email
+        if (userRepository.existsByEmailIgnoreCase(normalizedEmail)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }
 
@@ -51,6 +63,13 @@ public class AuthService {
         User saved = userRepository.save(user);
 
         return new RegisterResponse(saved.getId(), saved.getUsername(), saved.isActive());
+    }
+
+    private boolean isValidUsername(String username) {
+        if (username == null || username.length() < 3 || username.length() > 100) {
+            return false;
+        }
+        return username.matches("^[a-zA-Z0-9._]+$");
     }
 
     private String normalizeEmail(String value) {
