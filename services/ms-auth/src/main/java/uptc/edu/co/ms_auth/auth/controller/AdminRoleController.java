@@ -16,7 +16,11 @@ import uptc.edu.co.ms_auth.auth.dto.RoleAssignmentRequest;
 import uptc.edu.co.ms_auth.auth.dto.RolePermissionsRequest;
 import uptc.edu.co.ms_auth.auth.dto.RoleResponse;
 import uptc.edu.co.ms_auth.auth.dto.UserRolesResponse;
+import uptc.edu.co.ms_auth.auth.dto.UserAdminResponse;
+import uptc.edu.co.ms_auth.auth.dto.UserStatusRequest;
 import uptc.edu.co.ms_auth.auth.service.AdminRoleService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,11 +38,24 @@ public class AdminRoleController {
         return adminRoleService.listRoles();
     }
 
+    @GetMapping("/users")
+    @RequiresScope("admin:roles")
+    public List<UserAdminResponse> listUsers() {
+        return adminRoleService.listUsers();
+    }
+
     @PutMapping("/users/{id}/roles")
     @RequiresScope("admin:roles")
     public UserRolesResponse updateUserRoles(@PathVariable("id") Long id,
                                              @RequestBody RoleAssignmentRequest request) {
         return adminRoleService.updateUserRoles(id, request);
+    }
+
+    @PutMapping("/users/{id}/status")
+    @RequiresScope("admin:roles")
+    public UserAdminResponse updateUserStatus(@PathVariable("id") Long id,
+                                               @Valid @RequestBody UserStatusRequest request) {
+        return adminRoleService.updateUserStatus(id, request);
     }
 
     @PutMapping("/roles/{role}/permissions")
