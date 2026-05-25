@@ -1,6 +1,7 @@
 package co.edu.uptc.ms_suppliers.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -51,6 +52,12 @@ public class SupplierController {
     @ResponseStatus(HttpStatus.OK)
     public SupplierResponse getSupplier(@PathVariable UUID id) {
         return supplierService.getSupplier(id);
+    }
+
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public List<SupplierResponse> getSuppliers() {
+        return supplierService.getSuppliers();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

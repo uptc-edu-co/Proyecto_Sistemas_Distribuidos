@@ -1,5 +1,6 @@
 package co.edu.uptc.ms_contracts.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -104,5 +105,10 @@ public class ContractService {
         return ContractResponse.fromModel(contract);
     }
 
-    
+    public List<ContractResponse> getContracts() {
+        return repository.findAll().stream()
+                .map(ContractResponse::fromModel)
+                .toList();
+    }
+
 }

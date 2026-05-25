@@ -27,7 +27,7 @@ public class Contract {
     @Column(name = "supplier_id", nullable = false, columnDefinition = "UUID")
     private UUID supplierId;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String subject;
 
     @Column(name = "start_date", nullable = false)

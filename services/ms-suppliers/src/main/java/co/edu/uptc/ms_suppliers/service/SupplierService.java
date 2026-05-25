@@ -1,5 +1,6 @@
 package co.edu.uptc.ms_suppliers.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -50,6 +51,12 @@ public class SupplierService {
 
     public SupplierResponse getSupplier(UUID id) {
         return SupplierResponse.fromModel(findByIdOrThrow(id));
+    }
+
+    public List<SupplierResponse> getSuppliers() {
+        return supplierRepository.findAll().stream()
+                .map(SupplierResponse::fromModel)
+                .toList();
     }
 
     private Supplier findByIdOrThrow(UUID id) {
