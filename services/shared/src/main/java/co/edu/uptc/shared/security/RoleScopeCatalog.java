@@ -19,6 +19,7 @@ public final class RoleScopeCatalog {
     public static final String UPDATE_SUPPLIER = "update:supplier";
     public static final String VIEW_SUPPLIERS = "view:suppliers";
     public static final String VIEW_AUDIT = "view:audit";
+    public static final String ADMIN_ROLES = "admin:roles";
 
     private static final Map<String, Set<String>> ROLE_SCOPES = Map.of(
             ROLE_ADMIN, Set.of(
@@ -29,7 +30,8 @@ public final class RoleScopeCatalog {
                     CREATE_SUPPLIER,
                     UPDATE_SUPPLIER,
                     VIEW_SUPPLIERS,
-                    VIEW_AUDIT
+                        VIEW_AUDIT,
+                        ADMIN_ROLES
             ),
             ROLE_OFFICER, Set.of(
                     CREATE_CONTRACT,

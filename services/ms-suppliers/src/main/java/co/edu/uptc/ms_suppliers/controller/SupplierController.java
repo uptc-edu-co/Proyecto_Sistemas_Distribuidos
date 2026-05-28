@@ -1,5 +1,6 @@
 package co.edu.uptc.ms_suppliers.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -47,5 +48,11 @@ public class SupplierController {
     @ResponseStatus(HttpStatus.OK)
     public SupplierResponse getSupplier(@PathVariable UUID id) {
         return supplierService.getSupplier(id);
+    }
+
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public List<SupplierResponse> getSuppliers() {
+        return supplierService.getSuppliers();
     }
 }
