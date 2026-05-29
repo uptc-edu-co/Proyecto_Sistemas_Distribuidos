@@ -3,10 +3,12 @@ package uptc.edu.co.ms_auth.auth.service;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
+
+import co.edu.uptc.shared.exceptions.AuthenticationException;
+import co.edu.uptc.shared.exceptions.BusinessException;
+import org.springframework.http.HttpStatus;
 
 import uptc.edu.co.ms_auth.auth.dto.AuthResponse;
 import uptc.edu.co.ms_auth.auth.dto.LoginRequest;
@@ -35,11 +37,11 @@ public class AuthService {
     public RegisterResponse register(RegisterRequest request) {
         String normalizedEmail = normalizeEmail(request.getUsername());
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
+            throw new BusinessException("Username already exists", HttpStatus.CONFLICT, "USER_ALREADY_EXISTS");
         }
 
         if (normalizedEmail != null && userRepository.existsByEmailIgnoreCase(normalizedEmail)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+            throw new BusinessException("Email already exists", HttpStatus.CONFLICT, "EMAIL_ALREADY_EXISTS");
         }
 
         User user = new User();
@@ -68,15 +70,15 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+                .orElseThrow(() -> new AuthenticationException("Invalid credentials"));
 
         if (!user.isActive()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Inactive user");
+            throw new AuthenticationException("Inactive user");
         }
 
         String incomingHash = hasher.hash(request.getPassword());
         if (!incomingHash.equals(user.getPasswordHash())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+            throw new AuthenticationException("Invalid credentials");
         }
 
         Set<String> scopes = userRepository.findScopesByUsername(user.getUsername());
