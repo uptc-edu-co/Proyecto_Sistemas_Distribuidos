@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+
+import co.edu.uptc.shared.exceptions.AuthenticationException;
+import co.edu.uptc.shared.exceptions.BusinessException;
 import uptc.edu.co.ms_auth.auth.dto.AuthResponse;
 import uptc.edu.co.ms_auth.auth.dto.LoginRequest;
 import uptc.edu.co.ms_auth.auth.dto.RegisterRequest;
@@ -64,7 +66,7 @@ public class AuthController {
                                                @RequestParam(required = false) String state,
                                                @RequestParam(required = false) String error) {
         if (error != null && !error.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "OAuth login failed: " + error);
+            throw new AuthenticationException("OAuth login failed: " + error);
         }
 
         AuthResponse response = oauth2Service.handleCallback("google", code, state);
@@ -78,7 +80,10 @@ public class AuthController {
     private URI buildPostLoginRedirect(AuthResponse response) {
         String baseRedirect = oauth2Properties.getPostLoginRedirect();
         if (baseRedirect == null || baseRedirect.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Missing post-login redirect URL");
+            throw new BusinessException(
+                    "Missing post-login redirect URL",
+                    org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR,
+                    "CONFIGURATION_ERROR");
         }
 
         String scopes = response.getScopes() == null ? "" : String.join(",", response.getScopes());

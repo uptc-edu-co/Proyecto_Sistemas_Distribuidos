@@ -1,14 +1,15 @@
 package co.edu.uptc.ms_suppliers.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.server.ResponseStatusException;
 
+import co.edu.uptc.shared.exceptions.ResourceNotFoundException;
+import co.edu.uptc.shared.exceptions.ValidationException;
 import co.edu.uptc.ms_suppliers.dto.SupplierRequest;
 import co.edu.uptc.ms_suppliers.dto.SupplierResponse;
 import co.edu.uptc.ms_suppliers.dto.UpdateSupplierRequest;
@@ -27,7 +28,7 @@ public class SupplierService {
 
     public SupplierResponse createSupplier(SupplierRequest request) {
         if (supplierRepository.existsByNit(request.getNit())) {
-            throw new IllegalArgumentException("El NIT ya existe: " + request.getNit());
+            throw new ValidationException("El NIT ya existe: " + request.getNit());
         }
 
         Supplier saved = supplierRepository.save(request.toModel());
@@ -52,15 +53,21 @@ public class SupplierService {
         return SupplierResponse.fromModel(findByIdOrThrow(id));
     }
 
+    public List<SupplierResponse> getSuppliers() {
+        return supplierRepository.findAll().stream()
+                .map(SupplierResponse::fromModel)
+                .toList();
+    }
+
     private Supplier findByIdOrThrow(UUID id) {
         return supplierRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Proveedor no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Proveedor no encontrado con id: " + id));
     }
 
     private void validateNitUnchanged(Supplier existing, Supplier updates) {
         if (updates.getNit() != null && !existing.getNit().equals(updates.getNit())) {
-            throw new IllegalArgumentException("No se permite modificar el NIT");
+            throw new ValidationException("No se permite modificar el NIT");
         }
     }
 

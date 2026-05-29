@@ -1,11 +1,13 @@
 package co.edu.uptc.ms_contracts.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import co.edu.uptc.shared.exceptions.ResourceNotFoundException;
 import co.edu.uptc.ms_contracts.client.SupplierClient;
 import co.edu.uptc.ms_contracts.dto.ContractResponse;
 import co.edu.uptc.ms_contracts.dto.CreateContractRequest;
@@ -71,7 +73,7 @@ public class ContractService {
 
         // 1. Buscar contrato
         Contract contract = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Contrato no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Contrato no encontrado con id: " + id));
 
         boolean changed = false;
 
@@ -104,5 +106,10 @@ public class ContractService {
         return ContractResponse.fromModel(contract);
     }
 
-    
+    public List<ContractResponse> getContracts() {
+        return repository.findAll().stream()
+                .map(ContractResponse::fromModel)
+                .toList();
+    }
+
 }

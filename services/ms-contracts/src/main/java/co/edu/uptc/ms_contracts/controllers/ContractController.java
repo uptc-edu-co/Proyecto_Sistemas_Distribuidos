@@ -13,6 +13,7 @@ import co.edu.uptc.ms_contracts.dto.CreateContractRequest;
 import co.edu.uptc.ms_contracts.dto.UpdateContractRequest;
 import co.edu.uptc.ms_contracts.service.ContractService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -36,5 +37,11 @@ public class ContractController {
         
         ContractResponse response = service.updateContract(id, req);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<ContractResponse>> getContracts() {
+        return ResponseEntity.ok(service.getContracts());
     }
 }
