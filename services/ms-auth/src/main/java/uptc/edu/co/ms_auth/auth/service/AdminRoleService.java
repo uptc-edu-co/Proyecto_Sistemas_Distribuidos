@@ -17,6 +17,8 @@ import uptc.edu.co.ms_auth.auth.dto.RoleAssignmentRequest;
 import uptc.edu.co.ms_auth.auth.dto.RolePermissionsRequest;
 import uptc.edu.co.ms_auth.auth.dto.RoleResponse;
 import uptc.edu.co.ms_auth.auth.dto.UserRolesResponse;
+import uptc.edu.co.ms_auth.auth.dto.UserAdminResponse;
+import uptc.edu.co.ms_auth.auth.dto.UserStatusRequest;
 import uptc.edu.co.ms_auth.auth.model.Permission;
 import uptc.edu.co.ms_auth.auth.model.Role;
 import uptc.edu.co.ms_auth.auth.model.User;
@@ -40,6 +42,31 @@ public class AdminRoleService {
     }
 
     @Transactional(readOnly = true)
+    public List<UserAdminResponse> listUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserAdminResponse(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.isActive(),
+                        toSortedRoleNames(user)))
+                .sorted((left, right) -> left.getUsername().compareToIgnoreCase(right.getUsername()))
+                .toList();
+    }
+
+    @Transactional
+    public UserAdminResponse updateUserStatus(Long id, UserStatusRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        user.setActive(request.getActive());
+        User saved = userRepository.save(user);
+        return new UserAdminResponse(
+                saved.getId(),
+                saved.getUsername(),
+                saved.getEmail(),
+                saved.isActive(),
+                toSortedRoleNames(saved));
+    }
     public List<RoleResponse> listRoles() {
         return roleRepository.findAll().stream()
                 .map(role -> new RoleResponse(role.getName(), toSortedPermissionCodes(role)))
