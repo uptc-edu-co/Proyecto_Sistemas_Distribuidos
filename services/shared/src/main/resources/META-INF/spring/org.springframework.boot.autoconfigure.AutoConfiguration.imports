@@ -1,1 +1,2 @@
 co.edu.uptc.shared.security.GatewayAuthAutoConfiguration
+co.edu.uptc.shared.exceptions.GlobalExceptionAutoConfiguration

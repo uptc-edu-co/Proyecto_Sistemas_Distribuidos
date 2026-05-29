@@ -6,16 +6,17 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import co.edu.uptc.shared.exceptions.AuthenticationException;
+import co.edu.uptc.shared.exceptions.ResourceNotFoundException;
+import co.edu.uptc.shared.exceptions.ValidationException;
 import co.edu.uptc.shared.security.RoleScopeCatalog;
 import uptc.edu.co.ms_auth.auth.config.OAuth2Properties;
 import uptc.edu.co.ms_auth.auth.dto.AuthResponse;
@@ -45,12 +46,12 @@ public class OAuth2Service {
     private final RestClient restClient;
 
     public OAuth2Service(OAuth2Properties properties,
-                         OAuth2StateStore stateStore,
-                         ExternalIdentityRepository externalIdentityRepository,
-                         UserRepository userRepository,
-                         RoleRepository roleRepository,
-                         JwtService jwtService,
-                         Sha256Hasher hasher) {
+            OAuth2StateStore stateStore,
+            ExternalIdentityRepository externalIdentityRepository,
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            JwtService jwtService,
+            Sha256Hasher hasher) {
         this.properties = properties;
         this.stateStore = stateStore;
         this.externalIdentityRepository = externalIdentityRepository;
@@ -63,7 +64,7 @@ public class OAuth2Service {
 
     public URI buildAuthorizationUrl(String provider) {
         if (!PROVIDER_GOOGLE.equalsIgnoreCase(provider)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unsupported OAuth provider");
+            throw new ResourceNotFoundException("Unsupported OAuth provider: " + provider);
         }
 
         OAuth2Properties.Google google = properties.getGoogle();
@@ -82,15 +83,15 @@ public class OAuth2Service {
     @Transactional
     public AuthResponse handleCallback(String provider, String code, String state) {
         if (!PROVIDER_GOOGLE.equalsIgnoreCase(provider)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unsupported OAuth provider");
+            throw new ResourceNotFoundException("Unsupported OAuth provider: " + provider);
         }
 
         if (code == null || code.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing OAuth code");
+            throw new ValidationException("Missing OAuth code");
         }
 
         if (!stateStore.consumeState(state)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid OAuth state");
+            throw new AuthenticationException("Invalid OAuth state");
         }
 
         OAuth2Properties.Google google = properties.getGoogle();
@@ -121,7 +122,7 @@ public class OAuth2Service {
                 .body(GoogleTokenResponse.class);
 
         if (response == null || response.getAccessToken() == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token response from Google");
+            throw new AuthenticationException("Invalid token response from Google");
         }
 
         return response;
@@ -135,7 +136,7 @@ public class OAuth2Service {
                 .body(GoogleUserInfo.class);
 
         if (userInfo == null || userInfo.getEmail() == null || userInfo.getEmail().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing email from Google profile");
+            throw new AuthenticationException("Missing email from Google profile");
         }
 
         return userInfo;
